@@ -1,0 +1,55 @@
+body, html {
+    margin: 0; padding: 0; width: 100%; height: 100%;
+    background: #020204; color: white;
+    font-family: 'Consolas', monospace;
+    overflow-y: auto; /* Dejamos scrollbar vertical para poder ver la tabla completa */
+}
+
+#canvas-container {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
+}
+
+.main-content {
+    position: relative; z-index: 2;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 40px 20px;
+}
+
+.logo-doncic {
+    font-size: 3.5rem; color: #00CFFF; margin: 0; letter-spacing: 6px;
+    text-shadow: 0 0 15px rgba(0, 207, 255, 0.6);
+}
+
+.subtitle { color: #888; font-size: 1rem; }
+
+/* KPIs */
+.kpi-container {
+    display: flex; gap: 20px; width: 100%; max-width: 1000px; margin: 30px 0;
+}
+.kpi-card {
+    flex: 1; background: rgba(10,10,15,0.8); border: 1px solid #00A9CC;
+    border-radius: 8px; padding: 15px; text-align: center;
+}
+.alerta-medica { border-color: #ff3333; box-shadow: 0 0 10px rgba(255,51,51,0.2); }
+.kpi-num { font-size: 2rem; color: #00CFFF; font-weight: bold; margin: 5px 0 0 0; }
+.kpi-text { font-size: 0.9rem; color: #ff6666; margin: 5px 0 0 0; }
+
+/* TABLA PRO */
+.table-wrapper {
+    width: 100%; max-width: 1000px; background: rgba(5,5,10,0.9);
+    border: 1px solid #00A9CC; border-radius: 8px; padding: 20px;
+    box-shadow: 0 0 20px rgba(0,207,255,0.1);
+}
+table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+th, td { padding: 12px; text-align: left; border-bottom: 1px solid #222; }
+th { color: #00CFFF; border-bottom: 2px solid #00A9CC; }
+tr:hover { background: rgba(0,207,255,0.05); }
+.resaltado-azul { color: #00CFFF; font-weight: bold; }
+.nota-texto { color: #00ffaa; font-size: 0.9rem; }
+
+/* INJURY BOX */
+.injury-box {
+    width: 100%; max-width: 1000px; background: rgba(20,5,5,0.8);
+    border: 1px solid #ff3333; border-radius: 8px; padding: 20px; margin-top: 20px;
+}
+.injury-box h3 { color: #ff3333; margin-top: 0; }

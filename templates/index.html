@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luka Dončić - Engine Selector</title>
+    
+    <style>
+        /* ========================================= */
+        /* CSS INTEGRADO: Asegura el Fondo Dinámico  */
+        /* ========================================= */
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background: #030306; color: white;
+            font-family: 'Consolas', monospace;
+            overflow: hidden;
+        }
+
+        #canvas-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
+        }
+
+        .main-content {
+            position: relative; z-index: 2;
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; height: 100vh; padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .logo-doncic {
+            font-size: 3rem; color: #00CFFF; margin: 0; letter-spacing: 5px;
+            text-shadow: 0 0 15px rgba(0, 207, 255, 0.6);
+            text-align: center;
+        }
+
+        .subtitle { color: #666; font-size: 0.9rem; margin-bottom: 30px; }
+
+        /* Contenedor de Botones (Menú Horizontal) */
+        .selector-menu {
+            display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+            max-width: 800px; margin-bottom: 30px;
+        }
+
+        .btn-temporada {
+            background: rgba(10, 10, 20, 0.7); border: 1px solid #00A9CC;
+            color: #00CFFF; padding: 10px 18px; font-family: 'Consolas', monospace;
+            font-size: 1rem; font-weight: bold; cursor: pointer; border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-temporada:hover, .btn-temporada.activo {
+            background: #00CFFF; color: #030306;
+            box-shadow: 0 0 15px #00CFFF;
+            transform: translateY(-2px);
+        }
+
+        /* Bloque de Visualización de Datos de la Temporada */
+        .panel-datos {
+            width: 100%; max-width: 550px; background: rgba(5, 5, 10, 0.85);
+            border: 2px solid #00A9CC; border-radius: 10px; padding: 25px;
+            box-shadow: 0 0 25px rgba(0, 207, 255, 0.2);
+            box-sizing: border-box;
+            display: none; /* Ocultos por defecto, JavaScript los muestra */
+        }
+
+        /* Animación cuando aparece una temporada */
+        @keyframes fadeEfecto {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .panel-datos.activo {
+            display: block; animation: fadeEfecto 0.4s ease-out forwards;
+        }
+
+        .panel-datos h2 { color: #00CFFF; margin-top: 0; border-bottom: 1px solid #222; padding-bottom: 8px; }
+        
+        .stat-line {
+            display: flex; justify-content: space-between; font-size: 1.2rem; margin: 15px 0;
+        }
+        .stat-val { color: #00CFFF; font-weight: bold; }
+        .hito-val { color: #00ffaa; font-size: 1rem; margin-top: 15px; border-top: 1px dashed #333; padding-top: 10px;}
+    </style>
+</head>
+<body>
+    
+    <div id="canvas-container"></div>
+
+    <div class="main-content">
+        <header style="text-align: center;">
+            <h1 class="logo-doncic">DONČIĆ QUANTUM ARCHIVE</h1>
+            <p class="subtitle">[Selecciona una temporada para extraer estadísticas de rendimiento]</p>
+        </header>
+
+        <div class="selector-menu">
+            {% for t in temporadas %}
+                <button class="btn-temporada" onclick="mostrarTemporada('{{ t.id }}')">
+                    {{ t.año }}
+                </button>
+            {% endfor %}
+        </div>
+
+        {% for t in temporadas %}
+            <div id="{{ t.id }}" class="panel-datos">
+                <h2>📈 Temporada {{ t.año }}</h2>
+                <div class="stat-line">
+                    <span>Puntos por Partido:</span>
+                    <span class="stat-val">{{ t.pts }} PPG</span>
+                </div>
+                <div class="stat-line">
+                    <span>Rebotes por Partido:</span>
+                    <span class="stat-val">{{ t.reb }} RPG</span>
+                </div>
+                <div class="stat-line">
+                    <span>Asistencias por Partido:</span>
+                    <span class="stat-val">{{ t.ast }} APG</span>
+                </div>
+                <div class="hito-val">🏆 Logro: {{ t.hito }}</div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // --- MOTOR DEL FONDO DINÁMICO ---
+        particlesJS("canvas-container", {
+            "particles": {
+                "number": {"value": 110, "density": {"enable": true, "value_area": 800}},
+                "color": {"value": "#00CFFF"},
+                "shape": {"type": "circle"},
+                "opacity": {"value": 0.4},
+                "size": {"value": 2.5},
+                "line_linked": {"enable": true, "distance": 140, "color": "#00CFFF", "opacity": 0.2, "width": 1},
+                "move": {"enable": true, "speed": 1.8}
+            },
+            "interactivity": {
+                "events": {"onhover": {"enable": true, "mode": "grab"}},
+                "modes": {"grab": {"distance": 180, "line_linked": {"opacity": 0.5}}}
+            }
+        });
+
+        // --- LÓGICA INTERACTIVA DE LOS BOTONES (Saber cuál mostrar) ---
+        function mostrarTemporada(idTemporada) {
+            // 1. Ocultar todos los paneles de datos abiertos
+            const paneles = document.querySelectorAll('.panel-datos');
+            paneles.forEach(p => p.classList.remove('activo'));
+
+            // 2. Quitar el color brillante a todos los botones
+            const botones = document.querySelectorAll('.btn-temporada');
+            botones.forEach(b => b.classList.remove('activo'));
+
+            // 3. Mostrar el panel de la temporada que el usuario cliqueó
+            document.getElementById(idTemporada).classList.add('activo');
+
+            // 4. Dejar el botón que se presionó encendido en azul neón
+            event.currentTarget.classList.add('activo');
+        }
+
+        // Mostrar de forma automática la última temporada al cargar la página
+        document.addEventListener("DOMContentLoaded", function() {
+            mostrarTemporada('t8'); 
+        });
+    </script>
+</body>
+</html>
